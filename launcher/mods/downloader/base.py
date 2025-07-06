@@ -43,7 +43,7 @@ class DefaultDownloader:
             self._archive = to / f"{project}-{basename(urlparse(self._url).path)}"
     
         # Skip download if file name is the specified one
-        if self._archive.name == "3D_Shader_Scopes_for_GAMMA.3.7z":
+        if self._archive.name == "3D_Shader_Scopes_for_GAMMA.3.7z" or file.name == "3D_Shader_Scopes_for_GAMMA_3.06.7.7z":
             print(f"Skipping download for {self._archive.name}")
             return self._archive
     

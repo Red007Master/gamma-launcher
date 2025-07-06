@@ -3,7 +3,7 @@ from hashlib import md5
 from tqdm import tqdm
 
 def check_hash(file: Path, checksum: str, desc: str = None) -> bool:
-    if file.name == "3D_Shader_Scopes_for_GAMMA.3.7z":
+    if file.name == "3D_Shader_Scopes_for_GAMMA.3.7z" or file.name == "3D_Shader_Scopes_for_GAMMA_3.06.7.7z":
         print(f"Skipping hash check for {file.name}")
         return True
 
