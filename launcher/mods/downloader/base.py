@@ -36,19 +36,24 @@ class DefaultDownloader:
 
     def download(self, to: Path, use_cached=False, hash: str = None) -> Path:
         self._archive = self._archive or (to / basename(urlparse(self._url).path))
-
+    
         # Special case for github.com archive link
         if 'github.com' in self._url:
             _, project, *_ = self.regexp_url.match(self._url).groups()
             self._archive = to / f"{project}-{basename(urlparse(self._url).path)}"
-
+    
+        # Skip download if file name is the specified one
+        if self._archive.name == "3D_Shader_Scopes_for_GAMMA.3.7z":
+            print(f"Skipping download for {self._archive.name}")
+            return self._archive
+    
         if self._archive.exists() and use_cached:
             if not hash:
                 return self._archive
-
+    
             if check_hash(self._archive, hash):
                 return self._archive
-
+    
         with open(self._archive, "wb") as f, tqdm(
             desc=f"  - Downloading {self._archive.name} ({self._url})",
             unit="iB", unit_scale=True, unit_divisor=1024
@@ -57,7 +62,7 @@ class DefaultDownloader:
             for chunk in r.iter_content(chunk_size=1 * 1024 * 1024):
                 if chunk:
                     progress.update(f.write(chunk))
-
+    
         return self._archive
 
     def extract(self, to: Path, tmpdir: str = None) -> None:
