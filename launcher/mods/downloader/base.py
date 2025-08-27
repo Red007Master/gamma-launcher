@@ -4,6 +4,8 @@ from pathlib import Path
 from re import compile
 from tqdm import tqdm
 from urllib.parse import urlparse
+import time
+import requests
 
 from launcher import __version__
 from launcher.hash import check_hash
@@ -49,8 +51,25 @@ class DefaultDownloader:
             if check_hash(self._archive, hash):
                 return self._archive
 
-        r = g_session.get(self._url, stream=True)
-        r.raise_for_status()
+        max_retries = 100
+        retry_count = 0
+        
+        while retry_count < max_retries:
+            try:
+                r = g_session.get(self._url, stream=True)
+                r.raise_for_status()
+                break  # Success, exit the loop
+            except (requests.exceptions.ConnectionError, 
+                    requests.exceptions.ProtocolError,
+                    requests.exceptions.Timeout) as e:
+                retry_count += 1
+                if retry_count >= max_retries:
+                    raise RuntimeError(f"Failed to download after {max_retries} attempts: {self._url}") from e
+                
+                print(f"Download failed (attempt {retry_count}/{max_retries}): {e}")
+                print(f"Retrying in 10 seconds...")
+                time.sleep(10)
+        
         with open(self._archive, "wb") as f, tqdm(
             desc=f"  - Downloading {self._archive.name} ({self._url})",
             unit="iB", unit_scale=True, unit_divisor=1024
