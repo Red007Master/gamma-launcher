@@ -37,28 +37,38 @@ class DefaultDownloader:
         return (dl_dir / basename(urlparse(self._url).path)).exists()
 
     def download(self, to: Path, use_cached=False, hash: str = None) -> Path:
-        self._archive = self._archive or (to / basename(urlparse(self._url).path))
-
-        # Special case for github.com archive link
-        if 'github.com' in self._url:
-            _, project, *_ = self.regexp_url.match(self._url).groups()
-            self._archive = to / f"{project}-{basename(urlparse(self._url).path)}"
-
-        if self._archive.exists() and use_cached:
-            if not hash:
-                return self._archive
-
-            if check_hash(self._archive, hash):
-                return self._archive
-
         max_retries = 100
         retry_count = 0
-        
+
         while retry_count < max_retries:
             try:
+                self._archive = self._archive or (to / basename(urlparse(self._url).path))
+
+                # Special case for github.com archive link
+                if 'github.com' in self._url:
+                    _, project, *_ = self.regexp_url.match(self._url).groups()
+                    self._archive = to / f"{project}-{basename(urlparse(self._url).path)}"
+
+                if self._archive.exists() and use_cached:
+                    if not hash:
+                        return self._archive
+
+                    if check_hash(self._archive, hash):
+                        return self._archive
+
                 r = g_session.get(self._url, stream=True)
                 r.raise_for_status()
+
+                with open(self._archive, "wb") as f, tqdm(
+                    desc=f"  - Downloading {self._archive.name} ({self._url})",
+                    unit="iB", unit_scale=True, unit_divisor=1024
+                ) as progress:
+                    for chunk in r.iter_content(chunk_size=1 * 1024 * 1024):
+                        if chunk:
+                            progress.update(f.write(chunk))
+
                 break  # Success, exit the loop
+            
             except (requests.exceptions.ConnectionError, 
                     requests.exceptions.ProtocolError,
                     requests.exceptions.Timeout) as e:
@@ -69,15 +79,6 @@ class DefaultDownloader:
                 print(f"Download failed (attempt {retry_count}/{max_retries}): {e}")
                 print(f"Retrying in 10 seconds...")
                 time.sleep(10)
-        
-        with open(self._archive, "wb") as f, tqdm(
-            desc=f"  - Downloading {self._archive.name} ({self._url})",
-            unit="iB", unit_scale=True, unit_divisor=1024
-        ) as progress:
-            for chunk in r.iter_content(chunk_size=1 * 1024 * 1024):
-                if chunk:
-                    progress.update(f.write(chunk))
-
         return self._archive
 
     def extract(self, to: Path, tmpdir: str = None) -> None:
