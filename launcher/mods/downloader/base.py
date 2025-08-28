@@ -68,10 +68,8 @@ class DefaultDownloader:
                             progress.update(f.write(chunk))
 
                 break  # Success, exit the loop
-            
-            except (requests.exceptions.ConnectionError, 
-                    requests.exceptions.ProtocolError,
-                    requests.exceptions.Timeout) as e:
+
+            except Exception as e:
                 retry_count += 1
                 if retry_count >= max_retries:
                     raise RuntimeError(f"Failed to download after {max_retries} attempts: {self._url}") from e
