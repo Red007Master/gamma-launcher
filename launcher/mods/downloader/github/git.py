@@ -21,8 +21,12 @@ class GithubDownloader(DefaultDownloader):
         user, project, *_ = self.regexp_url.match(self._url).groups()
         self._archive = to / f"{project}.git"
 
+
         if not self._archive.is_dir():
             Repo.init(self._archive, bare=True)
+
+        if user == "Grokitach" and project == "Stalker_GAMMA":
+            user = "FaithBeam"
 
         repo = Repo(self._archive)
         remote = repo.create_remote(user, f"https://github.com/{user}/{project}") \
