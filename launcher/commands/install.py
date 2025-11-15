@@ -153,7 +153,7 @@ def _create_full_install_args() -> Dict:
             "help": "Set a custom repository for S.T.A.L.K..E.R.: G.A.M.M.A.",
             "type": str,
             "dest": "custom_repo",
-            "default": 'Grokitach/Stalker_GAMMA',
+            "default": 'FaithBeam/Stalker_GAMMA',
         },
         "--no-def-update": {
             "help": "Do not update S.T.A.L.K..E.R.: G.A.M.M.A. definition",
