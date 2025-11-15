@@ -38,10 +38,6 @@ class GithubDownloader(DefaultDownloader):
         return self._archive
 
     def extract(self, to: Path, r: str = None, tmpdir: str = None) -> None:
-
-        if self._url == "https://github.com/Grokitach/Stalker_GAMMA":
-            self._url = "https://github.com/FaithBeam/Stalker_GAMMA"
-
         user, *_, revision = self.regexp_url.match(self._url).groups()
         revision = revision if revision else f"{user}/main"
         repo = Repo(self._archive)
