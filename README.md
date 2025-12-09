@@ -11,6 +11,9 @@ This is a reimplementation of G.AM.M.A. launcher used for the first setup. You w
 
 It's strongly advised to install this in a [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (Python Virtual Environment)
 
+Make sure that your (Python) setup is capable of building from source.
+For example: On Fedora you need to have `python3-devel` installed.
+
 A quick guide on how to do this is to open your terminal/command prompt and navigating to the downloaded folder containing gamma-launcher, and typing `python3 -m venv env` on Linux, or `py -m venv env` on Windows.
 
 You will then have to enter the virtual environment by typing `source env/bin/activate` on Linux, or `.\env\Scripts\activate` on Windows.
