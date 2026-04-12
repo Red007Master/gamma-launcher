@@ -3,8 +3,7 @@
 Starting G.A.M.M.A. .NET Launcher is not possible on GNU/Linux because of .NET / powershell scripts
 
 This is a reimplementation of G.AM.M.A. launcher used for the first setup.
-You will need to follow [DravenusRex's guide](https://github.com/DravenusRex/stalker-gamma-linux-guide) or
-the newer [Red007Master's guide](https://github.com/Red007Master/Red-s-Guide-on-Installing-G.A.M.M.A.-on-Linux)
+You will need to follow [Red007Master's guide](https://github.com/Red007Master/Red-s-Guide-on-Installing-G.A.M.M.A.-on-Linux)
 to have a working game.
 
 ## Table of contents
